@@ -673,7 +673,13 @@ namespace ArmISA
         MISCREG_A64_UNIMPL,             // 604
         MISCREG_UNKNOWN,                // 605
 
-        NUM_MISCREGS                    // 606
+        // GPU fault register
+        MISCREG_GPU_FAULT,              // 606
+        MISCREG_GPU_FAULTADDR,          // 607
+        MISCREG_GPU_FAULTCODE,          // 608
+        MISCREG_GPU_FAULT_RSP,          // 609
+
+        NUM_MISCREGS                    // 610
     };
 
     enum MiscRegInfo {
@@ -1353,7 +1359,13 @@ namespace ArmISA
         "cp14_unimpl",
         "cp15_unimpl",
         "a64_unimpl",
-        "unknown"
+        "unknown",
+
+        // GPU fault registers
+        "gpuf",
+        "gpufaddr",
+        "gpufcode",
+        "gpufrsp"
     };
 
     static_assert(sizeof(miscRegName) / sizeof(*miscRegName) == NUM_MISCREGS,
@@ -1843,6 +1855,24 @@ namespace ArmISA
         Bitfield<9, 0> res1_9_0_el2;
    EndBitUnion(CPTR)
 
+   /**
+   * Register for active GPU page fault
+   * May need to increase to more bits if more than 1 GPU is in the system
+   */
+   BitUnion64(GPUFaultReg)
+      Bitfield<1, 0> inFault;
+   EndBitUnion(GPUFaultReg)
+
+   BitUnion64(GPUFaultCode)
+      Bitfield<0> present;
+      Bitfield<1> write;
+      Bitfield<2> user;
+      Bitfield<3> reserved;
+      Bitfield<4> fetch;
+   EndBitUnion(GPUFaultCode)
+
+   BitUnion64(GPUFaultRSPReg)
+   EndBitUnion(GPUFaultRSPReg)
 
     // Checks read access permissions to coproc. registers
     bool canReadCoprocReg(MiscRegIndex reg, SCR scr, CPSR cpsr,
