@@ -85,9 +85,8 @@ DirectoryMemory::mapAddressToDirectoryVersion(Addr address)
     if (m_num_directories_bits == 0)
         return 0;
 
-    uint64_t ret = bitSelect(address,
-                           m_numa_high_bit - m_num_directories_bits + 1,
-                           m_numa_high_bit);
+    uint64_t ret = shiftLowOrderBits(address, m_numa_high_bit - m_num_directories_bits + 1) % m_num_directories;
+
     return ret;
 }
 
