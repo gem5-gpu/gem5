@@ -229,6 +229,7 @@ Sequencer::insertRequest(PacketPtr pkt, RubyRequestType request_type)
                                            (SequencerRequest*) NULL);
 
     if ((request_type == RubyRequestType_ST) ||
+        (request_type == RubyRequestType_ST_Bypass) ||
         (request_type == RubyRequestType_RMW_Read) ||
         (request_type == RubyRequestType_RMW_Write) ||
         (request_type == RubyRequestType_Load_Linked) ||
@@ -301,6 +302,7 @@ Sequencer::removeRequest(SequencerRequest* srequest)
 
     Addr line_addr = makeLineAddress(srequest->pkt->getAddr());
     if ((srequest->m_type == RubyRequestType_ST) ||
+        (srequest->m_type == RubyRequestType_ST_Bypass) ||
         (srequest->m_type == RubyRequestType_RMW_Read) ||
         (srequest->m_type == RubyRequestType_RMW_Write) ||
         (srequest->m_type == RubyRequestType_Load_Linked) ||
@@ -436,6 +438,7 @@ Sequencer::writeCallback(Addr address, DataBlock& data,
     markRemoved();
 
     assert((request->m_type == RubyRequestType_ST) ||
+           (request->m_type == RubyRequestType_ST_Bypass) ||
            (request->m_type == RubyRequestType_ATOMIC) ||
            (request->m_type == RubyRequestType_RMW_Read) ||
            (request->m_type == RubyRequestType_RMW_Write) ||
@@ -485,6 +488,7 @@ Sequencer::readCallback(Addr address, DataBlock& data,
 
     assert((request->m_type == RubyRequestType_LD) ||
            (request->m_type == RubyRequestType_IFETCH) ||
+           (request->m_type == RubyRequestType_LD_Bypass) ||
            (request->m_type == RubyRequestType_FLUSHALL));
 
     hitCallback(request, data, true, mach, externalHit,
@@ -531,6 +535,7 @@ Sequencer::hitCallback(SequencerRequest* srequest, DataBlock& data,
                      getOffset(request_address), pkt->getSize());
     } else if (!pkt->isFlush()) {
         if ((type == RubyRequestType_LD) ||
+            (type == RubyRequestType_LD_Bypass) ||
             (type == RubyRequestType_IFETCH) ||
             (type == RubyRequestType_RMW_Read) ||
             (type == RubyRequestType_Locked_RMW_Read) ||
@@ -642,14 +647,22 @@ Sequencer::makeRequest(PacketPtr pkt)
                     primary_type = RubyRequestType_RMW_Read;
                     secondary_type = RubyRequestType_ST;
                 } else {
-                    primary_type = secondary_type = RubyRequestType_LD;
+                    if (pkt->req->isBypassL1()) {
+                        primary_type = secondary_type = RubyRequestType_LD_Bypass;
+                    } else {
+                        primary_type = secondary_type = RubyRequestType_LD;
+                    }
                 }
             }
         } else if (pkt->isWrite()) {
             //
             // Note: M5 packets do not differentiate ST from RMW_Write
             //
-            primary_type = secondary_type = RubyRequestType_ST;
+            if (pkt->req->isBypassL1()) {
+                primary_type = secondary_type = RubyRequestType_ST_Bypass;
+            } else {
+                primary_type = secondary_type = RubyRequestType_ST;
+            }
         } else if (pkt->isFlush()) {
             if (pkt->cmd == MemCmd::FlushAllReq) {
                 primary_type = secondary_type = RubyRequestType_FLUSHALL;

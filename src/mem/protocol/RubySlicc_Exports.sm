@@ -137,6 +137,8 @@ enumeration(RubyRequestType, desc="...", default="RubyRequestType_NULL") {
   NULL,              desc="Invalid request type";
   FLUSH,             desc="Flush request type";
   FLUSHALL,          desc="Flush everything from the cache";
+  LD_Bypass,         desc="Load, but bypass the L1";
+  ST_Bypass,         desc="Store, but bypass the L1";
   Release,           desc="Release operation";
   Acquire,           desc="Acquire opertion";
   AcquireRelease,    desc="Acquire and Release opertion";
