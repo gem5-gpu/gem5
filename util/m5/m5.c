@@ -258,11 +258,12 @@ do_sw99param(int argc, char *argv[])
 void
 do_gpu(int argc, char *argv[])
 {
-    if (argc != 0)
+    if (argc < 1)
         usage();
 
-    // @TODO: Figure out params that need to be passed
-    m5_gpu();
+    uint64_t* callno = (uint64_t*)argv[0];
+
+    m5_gpu(*callno, NULL);
 }
 
 #ifdef linux
