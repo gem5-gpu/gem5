@@ -718,6 +718,29 @@ class Packet : public Printable
     }
 
     /**
+     * Reinitialize packet address and size from the associated
+     * Request object, and reset other fields that may have been
+     * modified by a previous transaction.  Typically called when a
+     * statically allocated Request/Packet pair is reused for multiple
+     * transactions.
+     */
+    void
+    reinitFromRequest()
+    {
+        assert(req->hasPaddr());
+        flags = 0;
+        flags.set(VALID_ADDR|VALID_SIZE);
+        addr = req->getPaddr();
+        size = req->getSize();
+
+        bytesValid.clear();
+        headerDelay = 0;
+        payloadDelay = 0;
+
+        deleteData();
+    }
+
+    /**
      * Take a request packet and modify it in place to be suitable for
      * returning as a response to that request.
      */
