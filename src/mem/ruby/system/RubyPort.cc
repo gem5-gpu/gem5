@@ -43,6 +43,7 @@
 #include "debug/Config.hh"
 #include "debug/Drain.hh"
 #include "debug/Ruby.hh"
+#include "gpu/atomic_operations.hh"
 #include "mem/protocol/AccessPermission.hh"
 #include "mem/ruby/slicc_interface/AbstractController.hh"
 #include "mem/ruby/system/RubyPort.hh"
@@ -460,7 +461,14 @@ RubyPort::MemSlavePort::hitCallback(PacketPtr pkt)
     RubyPort *ruby_port = static_cast<RubyPort *>(&owner);
     RubySystem *rs = ruby_port->m_ruby_system;
     if (accessPhysMem) {
-        rs->getPhysMem()->access(pkt);
+        if (pkt->req->isSwap() && pkt->req->isLockedRMW() && pkt->isRead() &&
+            pkt->isWrite()) {
+            // Perform the packet's atomic operations on physical memory
+            AtomicOpRequest::atomicMemoryAccess(pkt, rs->getPhysMem());
+        } else {
+            rs->getPhysMem()->access(pkt);
+        }
+
     } else if (needsResponse) {
         pkt->makeResponse();
     }

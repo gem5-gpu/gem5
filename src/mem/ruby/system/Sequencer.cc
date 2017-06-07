@@ -631,6 +631,16 @@ Sequencer::makeRequest(PacketPtr pkt)
             primary_type = RubyRequestType_Locked_RMW_Read;
         }
         secondary_type = RubyRequestType_ST;
+
+        if (pkt->req->isSwap()) {
+            //
+            // This is an atomic swap for GPU atomics from gem5-gpu.
+            // Re-set the secondary_type to be atomic
+            //
+            assert(pkt->isRead() && pkt->isWrite());
+            assert(primary_type == RubyRequestType_Locked_RMW_Write);
+            secondary_type = RubyRequestType_ATOMIC;
+        }
     } else {
         if (pkt->isRead()) {
             if (pkt->req->isInstFetch()) {
