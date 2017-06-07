@@ -228,11 +228,15 @@ def create_system(options, full_system, system, piobus = None, dma_ports = []):
     # Connect the cpu sequencers and the piobus
     if piobus != None:
         for cpu_seq in cpu_sequencers:
-            cpu_seq.pio_master_port = piobus.slave
-            cpu_seq.mem_master_port = piobus.slave
+            # gem5-gpu: This is parameterized to not connect components that
+            # are unable to handle IO messages. This is a stop-gap fix until
+            # further decisions about GPU, copy engine IO capabilities are made
+            if cpu_seq.connect_to_io:
+                cpu_seq.pio_master_port = piobus.slave
+                cpu_seq.mem_master_port = piobus.slave
 
-            if buildEnv['TARGET_ISA'] == "x86":
-                cpu_seq.pio_slave_port = piobus.master
+                if buildEnv['TARGET_ISA'] == "x86":
+                    cpu_seq.pio_slave_port = piobus.master
 
     ruby._cpu_ports = cpu_sequencers
     ruby.num_of_sequencers = len(cpu_sequencers)

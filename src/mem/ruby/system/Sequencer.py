@@ -72,6 +72,10 @@ class RubySequencer(RubyPort):
     deadlock_threshold = Param.Cycles(500000,
         "max outstanding cycles for a request before deadlock/livelock declared")
     using_network_tester = Param.Bool(False, "")
+    # gem5-gpu: This is parameterized to not connect components that
+    # are unable to handle IO messages. This is a stop-gap fix until
+    # further decisions about GPU, copy engine IO capabilities are made
+    connect_to_io = Param.Bool(True, "Whether to connect to IO")
 
 class DMASequencer(MemObject):
     type = 'DMASequencer'
