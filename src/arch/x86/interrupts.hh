@@ -117,6 +117,7 @@ class Interrupts : public BasicPioDevice, IntDevice
      * A set of variables to keep track of interrupts that don't go through
      * the IRR.
      */
+    bool pendingGpu;
     bool pendingSmi;
     uint8_t smiVector;
     bool pendingNmi;
@@ -229,6 +230,12 @@ class Interrupts : public BasicPioDevice, IntDevice
         if (!entry.masked)
             requestInterrupt(entry.vector, entry.deliveryMode, entry.trigger);
         return entry.periodic;
+    }
+
+    void
+    triggerGPUInterrupt()
+    {
+        requestInterrupt(0, DeliveryMode::GPUFault, false);
     }
 
     AddrRangeList getIntAddrRange() const;

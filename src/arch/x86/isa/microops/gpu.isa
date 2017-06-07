@@ -1,4 +1,4 @@
-// Copyright (c) 2007-2008 The Hewlett-Packard Development Company
+// Copyright (c) 2013 Mark D. Hill and David A. Wood
 // All rights reserved.
 //
 // The license below extends only to copyright in the software and shall
@@ -33,34 +33,59 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Authors: Gabe Black
+// Authors: Jason Power
 
-//Common microop stuff
-##include "base.isa"
+output header {{
+        void gpuFinishPageFault(int gpuId, ThreadContext *tc);
+    class GPUFaultFinish : public X86ISA::X86MicroopBase
+    {
+      public:
+        GPUFaultFinish(ExtMachInst _machInst, const char * instMnem,
+                uint64_t setFlags) :
+            X86MicroopBase(_machInst, "gpufaultfinish", instMnem,
+                           setFlags | (ULL(1) << StaticInst::IsNonSpeculative),
+                           No_OpClass)
+        {
+        }
 
-//Floating point definitions
-##include "fpop.isa"
+        %(BasicExecDeclare)s
 
-//Register microop definitions
-##include "regop.isa"
+        std::string generateDisassembly(Addr pc,
+                const SymbolTable *symtab) const;
+    };
+}};
 
-//Load immediate microop definition
-##include "limmop.isa"
+output exec {{
+    Fault
+    GPUFaultFinish::execute(CPU_EXEC_CONTEXT *xc,
+            Trace::InstRecord * traceData) const
+    {
+        gpuFinishPageFault(0, xc->tcBase());
+        return NoFault;
+    }
+}};
 
-//Load/store microop definitions
-##include "ldstop.isa"
+output decoder {{
+    std::string GPUFaultFinish::generateDisassembly(Addr pc,
+            const SymbolTable *symtab) const
+    {
+        std::stringstream response;
 
-//Media microop definitions
-##include "mediaop.isa"
+        printMnemonic(response, instMnem, mnemonic);
 
-//Control flow microop definitions
-##include "seqop.isa"
+        return response.str();
+    }
+}};
 
-//Miscellaneous microop definitions
-##include "specop.isa"
+let {{
+    class GPUFaultFinish(X86Microop):
+        className = "GPUFaultFinish"
+        def __init__(self):
+            pass
 
-//Microops for printing out debug messages through M5
-##include "debug.isa"
+        def getAllocator(self, microFlags):
+            return "new GPUFaultFinish(machInst, macrocodeBlock, %s)" % \
+                    self.microFlagsText(microFlags)
 
-//Microops for interacting with the GPU
-##include "gpu.isa"
+    microopClasses["gpufaultfinish"] = GPUFaultFinish
+}};

@@ -396,6 +396,12 @@ namespace X86ISA
         // "Fake" MSRs for internally implemented devices
         MISCREG_PCI_CONFIG_ADDRESS,
 
+        // GPU fault register
+        MISCREG_GPU_FAULT,
+        MISCREG_GPU_FAULTADDR,
+        MISCREG_GPU_FAULTCODE,
+        MISCREG_GPU_FAULT_RSP,
+
         NUM_MISCREGS
     };
 
@@ -995,6 +1001,25 @@ namespace X86ISA
         Bitfield<11> enable;
         Bitfield<8> bsp;
     EndBitUnion(LocalApicBase)
+
+    /**
+     * Register for active GPU page fault
+     * May need to increase to more bits if more than 1 GPU is in the system
+     */
+    BitUnion64(GPUFaultReg)
+        Bitfield<1, 0> inFault;
+    EndBitUnion(GPUFaultReg)
+
+    BitUnion64(GPUFaultCode)
+        Bitfield<0> present;
+        Bitfield<1> write;
+        Bitfield<2> user;
+        Bitfield<3> reserved;
+        Bitfield<4> fetch;
+    EndBitUnion(GPUFaultCode)
+
+    BitUnion64(GPUFaultRSPReg)
+    EndBitUnion(GPUFaultRSPReg)
 }
 
 #endif // __ARCH_X86_INTREGS_HH__
