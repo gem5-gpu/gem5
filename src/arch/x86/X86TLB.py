@@ -49,6 +49,9 @@ class X86PagetableWalker(MemObject):
     system = Param.System(Parent.any, "system object")
     num_squash_per_cycle = Param.Unsigned(4,
             "Number of outstanding walks that can be squashed per cycle")
+    bypass_l1 = Param.Bool(False, "Bypass the L1 cache when issuing memory \
+                                   accesses for pagetable walks. Useful for \
+                                   caches that may hold stale data.")
 
 class X86TLB(BaseTLB):
     type = 'X86TLB'

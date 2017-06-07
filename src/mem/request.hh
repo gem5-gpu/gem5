@@ -154,6 +154,8 @@ class Request
         PF_EXCLUSIVE                = 0x02000000,
         /** The request should be marked as LRU. */
         EVICT_NEXT                  = 0x04000000,
+        /** The request should bypass the L1 cache. */
+        BYPASS_L1                   = 0x08000000,
 
         /**
          * The request should be handled by the generic IPR code (only
@@ -655,6 +657,7 @@ class Request
     bool isMmappedIpr() const { return _flags.isSet(MMAPPED_IPR); }
     bool isSecure() const { return _flags.isSet(SECURE); }
     bool isPTWalk() const { return _flags.isSet(PT_WALK); }
+    bool isBypassL1() const { return _flags.isSet(BYPASS_L1); }
 };
 
 #endif // __MEM_REQUEST_HH__

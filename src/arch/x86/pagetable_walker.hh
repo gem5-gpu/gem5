@@ -185,6 +185,9 @@ namespace X86ISA
         void recvReqRetry();
         bool sendTiming(WalkerState * sendingState, PacketPtr pkt);
 
+        // If true, send all memory requests with the bypass L1 flag true
+        bool bypassL1;
+
       public:
 
         void setTLB(TLB * _tlb)
@@ -205,7 +208,8 @@ namespace X86ISA
             funcState(this, NULL, NULL, true), tlb(NULL), sys(params->system),
             masterId(sys->getMasterId(name())),
             numSquashable(params->num_squash_per_cycle),
-            startWalkWrapperEvent(this)
+            startWalkWrapperEvent(this),
+            bypassL1(params->bypass_l1)
         {
         }
     };
