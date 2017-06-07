@@ -202,7 +202,8 @@ sub pct_diff
   'sim_ops',
   'sim_ticks',
   'host_inst_rate',
-  'host_mem_usage'
+  'host_mem_usage',
+  'inst_counts'
 );
 
 $key_stat_pattern = join('|', @key_stat_list);

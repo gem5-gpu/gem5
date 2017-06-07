@@ -361,6 +361,9 @@ configs += ['simple-atomic', 'simple-atomic-mp',
             'rubytest', 'memtest', 'memtest-filter',
             'tgen-simple-mem', 'tgen-dram-ctrl']
 
+if env['GPGPU_SIM']:
+    configs.append('gem5-gpu')
+
 if env['PROTOCOL'] != 'None':
     if env['PROTOCOL'] == 'MI_example':
         configs += [c + "-ruby" for c in configs]
