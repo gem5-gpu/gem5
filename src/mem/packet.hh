@@ -128,6 +128,8 @@ class MemCmd
         FlushResp,
         InvalidateReq,   // request for address to be invalidated
         InvalidateResp,
+        FlushAllReq,      // Flush entire cache request
+        FlushAllResp,
         NUM_MEM_CMDS
     };
 

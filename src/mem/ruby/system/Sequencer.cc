@@ -235,7 +235,8 @@ Sequencer::insertRequest(PacketPtr pkt, RubyRequestType request_type)
         (request_type == RubyRequestType_Store_Conditional) ||
         (request_type == RubyRequestType_Locked_RMW_Read) ||
         (request_type == RubyRequestType_Locked_RMW_Write) ||
-        (request_type == RubyRequestType_FLUSH)) {
+        (request_type == RubyRequestType_FLUSH) ||
+        (request_type == RubyRequestType_FLUSHALL)) {
 
         // Check if there is any outstanding read request for the same
         // cache line.
@@ -442,7 +443,8 @@ Sequencer::writeCallback(Addr address, DataBlock& data,
            (request->m_type == RubyRequestType_Store_Conditional) ||
            (request->m_type == RubyRequestType_Locked_RMW_Read) ||
            (request->m_type == RubyRequestType_Locked_RMW_Write) ||
-           (request->m_type == RubyRequestType_FLUSH));
+           (request->m_type == RubyRequestType_FLUSH) ||
+           (request->m_type == RubyRequestType_FLUSHALL));
 
     //
     // For Alpha, properly handle LL, SC, and write requests with respect to
@@ -482,7 +484,8 @@ Sequencer::readCallback(Addr address, DataBlock& data,
     markRemoved();
 
     assert((request->m_type == RubyRequestType_LD) ||
-           (request->m_type == RubyRequestType_IFETCH));
+           (request->m_type == RubyRequestType_IFETCH) ||
+           (request->m_type == RubyRequestType_FLUSHALL));
 
     hitCallback(request, data, true, mach, externalHit,
                 initialRequestTime, forwardRequestTime, firstResponseTime);
@@ -648,7 +651,11 @@ Sequencer::makeRequest(PacketPtr pkt)
             //
             primary_type = secondary_type = RubyRequestType_ST;
         } else if (pkt->isFlush()) {
-          primary_type = secondary_type = RubyRequestType_FLUSH;
+            if (pkt->cmd == MemCmd::FlushAllReq) {
+                primary_type = secondary_type = RubyRequestType_FLUSHALL;
+            } else {
+                primary_type = secondary_type = RubyRequestType_FLUSH;
+            }
         } else {
             panic("Unsupported ruby packet type\n");
         }

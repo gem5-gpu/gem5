@@ -194,7 +194,12 @@ MemCmd::commandInfo[] =
       InvalidateResp, "InvalidateReq" },
     /* Invalidation Response */
     { SET3(IsInvalidate, IsResponse, NeedsExclusive),
-      InvalidCmd, "InvalidateResp" }
+      InvalidCmd, "InvalidateResp" },
+    /* FlushAll Request */
+    { SET4(IsRequest, NeedsResponse, IsFlush, IsInvalidate), FlushAllResp,
+      "FlushAllReq" },
+    /* FlushAll Response */
+    { SET3(IsResponse, IsFlush, IsInvalidate), InvalidCmd, "FlushAllResp" },
 };
 
 bool

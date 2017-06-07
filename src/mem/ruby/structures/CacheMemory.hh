@@ -116,6 +116,8 @@ class CacheMemory : public SimObject
     void clearLocked (Addr addr);
     bool isLocked (Addr addr, int context);
 
+    void flashInvalidate();
+
     // Print cache contents
     void print(std::ostream& out) const;
     void printData(std::ostream& out) const;

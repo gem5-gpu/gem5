@@ -159,6 +159,7 @@ structure (CacheMemory, external = "yes") {
   void setMRU(Addr);
   void recordRequestType(CacheRequestType, Addr);
   bool checkResourceAvailable(CacheResourceType, Addr);
+  void flashInvalidate();
 
   int getCacheSize();
   int getNumBlocks();
