@@ -69,13 +69,28 @@ class Cluster(BaseTopology):
         self.extBW = extBW
         self.intLatency = intLatency
         self.extLatency = extLatency
+        self.connectToParent = True
 
     def add(self, node):
         self.nodes.append(node)
 
+    # Since Clusters may be recursively defined, it may be desirable to nest
+    # Clusters without connecting them to higher-level parts of the network
+    # Use disableConnectToParent() to keep a Cluster from being connected
+    # to the router of a Cluster that contains it.
+    def getConnectToParent(self):
+        return self.connectToParent
+
+    def disableConnectToParent(self):
+        self.connectToParent = False
+
     def makeTopology(self, options, network, IntLink, ExtLink, Router):
         """ Recursively make all of the links and routers
         """
+
+        # If this sub-Cluster has already been constructed
+        if self.router is not None:
+            return
 
         # make a router to connect all of the nodes
         self.router = Router(router_id=self.num_routers())
@@ -85,24 +100,25 @@ class Cluster(BaseTopology):
             if type(node) == Cluster:
                 node.makeTopology(options, network, IntLink, ExtLink, Router)
 
-                # connect this cluster to the router
-                link = IntLink(link_id=self.num_int_links(), node_a=self.router,
-                        node_b=node.router)
+                if node.getConnectToParent():
+                    # connect this cluster to the router
+                    link = IntLink(link_id=self.num_int_links(),
+                                   node_a=self.router, node_b=node.router)
 
-                if node.extBW:
-                    link.bandwidth_factor = node.extBW
+                    if node.extBW:
+                        link.bandwidth_factor = node.extBW
 
-                # if there is an interanl b/w for this node
-                # and no ext b/w to override
-                elif self.intBW:
-                    link.bandwidth_factor = self.intBW
+                    # if there is an interanl b/w for this node
+                    # and no ext b/w to override
+                    elif self.intBW:
+                        link.bandwidth_factor = self.intBW
 
-                if node.extLatency:
-                    link.latency = node.extLatency
-                elif self.intLatency:
-                    link.latency = self.intLatency
+                    if node.extLatency:
+                        link.latency = node.extLatency
+                    elif self.intLatency:
+                        link.latency = self.intLatency
 
-                network.int_links.append(link)
+                    network.int_links.append(link)
             else:
                 # node is just a controller,
                 # connect it to the router via a ext_link
