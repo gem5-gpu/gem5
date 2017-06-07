@@ -228,6 +228,9 @@
                     0x5b: m5_work_end({{
                         PseudoInst::workend(xc->tcBase(), Rdi, Rsi);
                     }}, IsNonSpeculative);
+                    0x5c: m5_gpu({{
+                            PseudoInst::gpu(xc->tcBase(), Rdi, Rsi);
+                        }}, IsNonSpeculative, IsSerializeAfter);
                     default: Inst::UD2();
                 }
             }

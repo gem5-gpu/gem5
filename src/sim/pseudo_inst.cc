@@ -717,4 +717,10 @@ workend(ThreadContext *tc, uint64_t workid, uint64_t threadid)
     }
 }
 
+void
+gpu(ThreadContext *tc, uint64_t param1, uint64_t param2)
+{
+    panic("gpu pseudo instruction not yet defined");
+}
+
 } // namespace PseudoInst

@@ -54,13 +54,14 @@ void m5_reset_stats(uint64_t ns_delay, uint64_t ns_period);
 void m5_dump_stats(uint64_t ns_delay, uint64_t ns_period);
 void m5_dumpreset_stats(uint64_t ns_delay, uint64_t ns_period);
 uint64_t m5_readfile(void *buffer, uint64_t len, uint64_t offset);
-uint64_t m5_writefile(void *buffer, uint64_t len, uint64_t offset, const char *filename);
+//uint64_t m5_writefile(void *buffer, uint64_t len, uint64_t offset, const char *filename);
 void m5_debugbreak(void);
 void m5_switchcpu(void);
 void m5_addsymbol(uint64_t addr, char *symbol);
 void m5_panic(void);
 void m5_work_begin(uint64_t workid, uint64_t threadid);
 void m5_work_end(uint64_t workid, uint64_t threadid);
+void m5_gpu();
 
 // These operations are for critical path annotation
 void m5a_bsm(char *sm, const void *id, int flags);

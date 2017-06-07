@@ -61,6 +61,7 @@
 
 #define work_begin_func         0x5a
 #define work_end_func           0x5b
+#define gpu_func                0x5c
 
 #define syscall_func            0x60 // Reserved for user
 #define pagefault_func          0x61 // Reserved for user

@@ -32,6 +32,7 @@ AS=as
 LD=ld
 
 CFLAGS=-O2 -DM5OP_ADDR=0xFFFF0000
+LDFLAGS=-static
 OBJS=m5.o m5op_x86.o
 
 all: m5
@@ -43,7 +44,7 @@ all: m5
 	$(CC)  $(CFLAGS) -o $@ -c $<
 
 m5: $(OBJS)
-	$(CC) -o $@ $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $(OBJS)
 
 clean:
 	rm -f *.o m5
