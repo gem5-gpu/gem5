@@ -200,6 +200,10 @@ MemCmd::commandInfo[] =
       "FlushAllReq" },
     /* FlushAll Response */
     { SET3(IsResponse, IsFlush, IsInvalidate), InvalidCmd, "FlushAllResp" },
+    /* Fence Request */
+    { SET2(IsRequest, NeedsResponse), FenceResp, "FenceReq" },
+    /* Fence Response */
+    { SET1(IsResponse), InvalidCmd, "FenceResp" },
 };
 
 bool

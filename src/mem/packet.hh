@@ -130,6 +130,8 @@ class MemCmd
         InvalidateResp,
         FlushAllReq,      // Flush entire cache request
         FlushAllResp,
+        FenceReq,       // Enforce memory access ordering based on pkt contents
+        FenceResp,      // Fence operation has completed
         NUM_MEM_CMDS
     };
 
