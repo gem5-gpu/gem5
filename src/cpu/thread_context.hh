@@ -231,6 +231,8 @@ class ThreadContext
 
     virtual void setMiscRegNoEffect(int misc_reg, const MiscReg &val) = 0;
 
+    virtual void setMiscRegActuallyNoEffect(int misc_reg, const MiscReg &val) = 0;
+
     virtual void setMiscReg(int misc_reg, const MiscReg &val) = 0;
 
     virtual int flattenIntIndex(int reg) = 0;
@@ -437,6 +439,9 @@ class ProxyThreadContext : public ThreadContext
 
     void setMiscRegNoEffect(int misc_reg, const MiscReg &val)
     { return actualTC->setMiscRegNoEffect(misc_reg, val); }
+
+    void setMiscRegActuallyNoEffect(int misc_reg, const MiscReg &val)
+    { return actualTC->setMiscRegActuallyNoEffect(misc_reg, val); }
 
     void setMiscReg(int misc_reg, const MiscReg &val)
     { return actualTC->setMiscReg(misc_reg, val); }

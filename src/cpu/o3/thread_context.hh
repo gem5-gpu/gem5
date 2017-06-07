@@ -239,6 +239,9 @@ class O3ThreadContext : public ThreadContext
     /** Sets a misc. register. */
     virtual void setMiscRegNoEffect(int misc_reg, const MiscReg &val);
 
+    /** Sets a misc. register with actually no effect (e.g. no squashes). */
+    virtual void setMiscRegActuallyNoEffect(int misc_reg, const MiscReg &val);
+
     /** Sets a misc. register, including any side-effects the
      * write might have as defined by the architecture. */
     virtual void setMiscReg(int misc_reg, const MiscReg &val);

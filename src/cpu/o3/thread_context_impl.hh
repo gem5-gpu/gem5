@@ -306,6 +306,13 @@ O3ThreadContext<Impl>::setMiscRegNoEffect(int misc_reg, const MiscReg &val)
     conditionalSquash();
 }
 
+template <class Impl>
+void
+O3ThreadContext<Impl>::setMiscRegActuallyNoEffect(int misc_reg, const MiscReg &val)
+{
+    cpu->setMiscRegNoEffect(misc_reg, val, thread->threadId());
+}
+
 #endif//__CPU_O3_THREAD_CONTEXT_IMPL_HH__
 template <class Impl>
 void

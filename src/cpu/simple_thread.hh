@@ -390,6 +390,12 @@ class SimpleThread : public ThreadState
     }
 
     void
+    setMiscRegActuallyNoEffect(int misc_reg, const MiscReg &val, ThreadID tid = 0)
+    {
+        return isa->setMiscRegNoEffect(misc_reg, val);
+    }
+
+    void
     setMiscReg(int misc_reg, const MiscReg &val, ThreadID tid = 0)
     {
         return isa->setMiscReg(misc_reg, val, tc);
