@@ -125,6 +125,7 @@ class MemCmd
         // Fake simulator-only commands
         PrintReq,       // Print state matching address
         FlushReq,      //request for a cache flush
+        FlushResp,
         InvalidateReq,   // request for address to be invalidated
         InvalidateResp,
         NUM_MEM_CMDS

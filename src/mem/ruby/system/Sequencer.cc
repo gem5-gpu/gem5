@@ -564,6 +564,8 @@ Sequencer::hitCallback(SequencerRequest* srequest, DataBlock& data,
         delete pkt;
         rs->m_cache_recorder->enqueueNextFetchRequest();
     } else if (RubySystem::getCooldownEnabled()) {
+        assert(pkt->req);
+        delete pkt->req;
         delete pkt;
         rs->m_cache_recorder->enqueueNextFlushRequest();
     } else {
