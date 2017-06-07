@@ -509,7 +509,8 @@ RubyMemoryControl::issueRequest(int bank)
             req->m_is_mem_read? 'R':'W',
             bank, m_event.scheduled() ? 'Y':'N');
 
-    enqueueToDirectory(req, Cycles(m_mem_ctl_latency + m_mem_fixed_delay));
+    enqueueToDirectory(req, Cycles(m_mem_ctl_latency + m_mem_fixed_delay +
+                       m_bank_busy_time + m_basic_bus_busy_time));
 
     m_oldRequest[bank] = 0;
     markTfaw(rank);
