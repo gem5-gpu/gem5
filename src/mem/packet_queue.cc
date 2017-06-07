@@ -112,12 +112,14 @@ PacketQueue::schedSendTiming(PacketPtr pkt, Tick when, bool force_order)
     // express snoops should never be queued
     assert(!pkt->isExpressSnoop());
 
+    // NOTE: Remove this for now since Ruby and GPGPU-Sim have deadlock
+    //       detection. Also, these queues will be large for GPUs
     // add a very basic sanity check on the port to ensure the
     // invisible buffer is not growing beyond reasonable limits
-    if (transmitList.size() > 100) {
-        panic("Packet queue %s has grown beyond 100 packets\n",
-              name());
-    }
+    // if (transmitList.size() > 100) {
+    //    panic("Packet queue %s has grown beyond 100 packets\n",
+    //          name());
+    // }
 
     // if requested, force the timing to be in-order by changing the when
     // parameter
