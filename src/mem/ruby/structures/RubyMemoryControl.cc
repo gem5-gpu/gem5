@@ -559,7 +559,7 @@ RubyMemoryControl::executeCycle()
         m_refresh_count = m_refresh_period_system;
 
         // Are we overrunning our ability to refresh?
-        assert(m_need_refresh < 10);
+        if (m_need_refresh >= 500) warn_once("Refresh delayed more than 500 cycles!\n");
         m_need_refresh++;
     }
 
